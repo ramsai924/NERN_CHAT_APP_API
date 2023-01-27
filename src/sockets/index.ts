@@ -6,6 +6,7 @@ const globalSocket = function(socket: any){
         const { userID } = data;
         socket.broadcast.emit(`user_online_${userID}`, { ...data, userStatus: true, text: userID })
     })
+    //test
     
     //socket emit for user-offline
     socket.on("user_offline", (data: any) => {
