@@ -1,5 +1,6 @@
 import userService from '../services/users.service'
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 
 const userServices = new userService()
 
@@ -56,19 +57,23 @@ class userControllers{
             userData.password = await bcrypt.hash(password, 10)
 
             if (userData){
+                const userObj = {
+                    firstName: userData.firstName,
+                    lastName: userData.lastName,
+                    email: userData.email,
+                    avatar: userData.avatar
+                }
+                const refreshToken: any = await jwt.sign(userObj, 'CHATAPP', { expiresIn: '60d' })
+                const AccessToken: any = await jwt.sign(userObj, 'CHATAPP', { expiresIn: '30d' })
+
                 let responseUserData = {
                     token : {
-                        refreshToken: {
-                            token: '',
-                            expire: ''
-                        },
-                        accessToken: {
-                            token: '',
-                            expire: ''
-                        }
-                    }
+                        refreshToken: refreshToken,
+                        accessToken: AccessToken
+                    },
+                    user: userObj
                 }
-                res.status(200).json({ success: true, data: userData, message: 'User created successfully' })
+                res.status(200).json({ success: true, data: responseUserData, message: 'User created successfully' })
             }
         } catch (err: any) {
             res.status(500).json({ success: false, data: null, message: err?.message })
