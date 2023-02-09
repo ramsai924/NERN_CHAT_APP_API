@@ -47,8 +47,6 @@ class userControllers{
                 return res.status(200).json({ success: false, data: null, message: 'Password should be grater than 6 characters' })
             }
 
-   
-
             const userExits = await userServices.checkUserData({ email: email })
             if (userExits !== null){
                 return res.status(200).json({ success: false, data: null, message: 'User already exits with details provided' })
@@ -58,6 +56,18 @@ class userControllers{
             userData.password = await bcrypt.hash(password, 10)
 
             if (userData){
+                let responseUserData = {
+                    token : {
+                        refreshToken: {
+                            token: '',
+                            expire: ''
+                        },
+                        accessToken: {
+                            token: '',
+                            expire: ''
+                        }
+                    }
+                }
                 res.status(200).json({ success: true, data: userData, message: 'User created successfully' })
             }
         } catch (err: any) {
