@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema(
         mobile: {
             type: String,
             trim: true,
-            required: [true, 'Mobile number is required']
+            // required: [true, 'Mobile number is required']
         },
         avatar: {
             type: Object,

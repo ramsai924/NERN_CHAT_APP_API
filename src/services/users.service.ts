@@ -2,6 +2,15 @@ import userModel from "../models/users.model";
 import userconversationModel from "../models/userConversations.model";
 
 class userServices {
+    checkUserData = async(query: any) => {
+        try {
+            const findUser = await userModel.findOne(query)
+            return findUser;
+        } catch (err: any) {
+            throw err;
+        }
+    }
+
     checkUserExits = async (email: any, mobile: any) => {
         try {
             const findUser = await userModel.findOne({ $or: [{ email: email }, { mobile: mobile }] })
@@ -45,6 +54,27 @@ class userServices {
         try {
             const findUsers: any = await userModel.findByIdAndUpdate({ _id: userId }, { $set: { password: hashPasword } }, { new: true });
             return findUsers;
+        } catch (err: any) {
+            throw err;
+        }
+    }
+
+    getConversationList = async (id: any) => {
+        try {
+            const findUserConversation: any = await userconversationModel.findOne({ user: id })
+                .populate({ path: 'conversations', model: 'conversation', options: { sort: { updatedAt: -1 } }, populate: { path: 'users', model: 'user' }});
+
+            return findUserConversation;
+        } catch (err: any) {
+            throw err;
+        }
+    }
+
+    getUserListRegex = async (query: any) => {
+        try {
+            const findUserqueryData: any = await userModel.find({ email: { $regex: query } })
+
+            return findUserqueryData;
         } catch (err: any) {
             throw err;
         }

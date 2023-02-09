@@ -11,7 +11,8 @@ const userconversationSchema = new mongoose.Schema(
         },
         user: {
             type: mongoose.Types.ObjectId,
-            ref: 'user'
+            ref: 'user',
+            unique: true
         }
     },
     {

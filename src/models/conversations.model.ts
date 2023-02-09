@@ -22,7 +22,8 @@ const conversationSchema = new mongoose.Schema(
         },
         topChat: {
             type: mongoose.Types.ObjectId,
-            ref: 'message'
+            ref: 'message',
+            default: null
         },
         createdBy:{
             type: mongoose.Types.ObjectId,

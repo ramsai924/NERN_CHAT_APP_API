@@ -4,24 +4,59 @@ import bcrypt from 'bcrypt'
 const userServices = new userService()
 
 class userControllers{
+    getUserData = async (req: any, res: any) => {
+        try {
+            const { email } = req.body;
+
+            if (email === '' || email === undefined) {
+                return res.status(204).json({ success: false, data: null, message: 'email should not be empty' })
+            }
+            const userData = await userServices.checkUserData({ email: email })
+    
+            if (userData) {
+                res.status(200).json({ success: true, data: userData, message: 'User data found successfully' })
+            }else{
+                res.status(200).json({ success: false, data: null, message: 'User data null' })
+            }
+        } catch (err: any) {
+            res.status(500).json({ success: false, data: null, message: err?.message })
+        }
+    }
+    
     createUser = async (req: any, res: any) => {
         try {
-            const { email, mobile } = req.body;
-
-            if (mobile === ''){
-                return res.status(204).json({ success: false,data: null,message: 'Phone number should not be empty' })
+            const { email, password, firstName, lastName } = req.body;
+            
+            if (email === '' || email === undefined) {
+                return res.status(200).json({ success: false, data: null, message: 'Email should not be empty' })
             }
 
-            if(mobile.length < 10 || mobile.length > 10){
-                return res.status(200).json({ success: false, data: null, message: 'Phone number should greater than or equal to 10 characters' })
+            // if(mobile.length < 10 || mobile.length > 10){
+            //     return res.status(200).json({ success: false, data: null, message: 'Phone number should greater than or equal to 10 characters' })
+            // }
+
+            if (firstName === "" || firstName === undefined){
+                return res.status(200).json({ success: false, data: null, message: 'First Name should not be empty' })
             }
 
-            const userExits = await userServices.checkUserExits(email,mobile)
+            if (password === '' || password === undefined) {
+                return res.status(200).json({ success: false, data: null, message: 'Password should not be empty' })
+            }
+
+            if(password.length < 6){
+                return res.status(200).json({ success: false, data: null, message: 'Password should be grater than 6 characters' })
+            }
+
+   
+
+            const userExits = await userServices.checkUserData({ email: email })
             if (userExits !== null){
                 return res.status(200).json({ success: false, data: null, message: 'User already exits with details provided' })
             }
 
             const userData: any = await userServices.createUser(req.body);
+            userData.password = await bcrypt.hash(password, 10)
+
             if (userData){
                 res.status(200).json({ success: true, data: userData, message: 'User created successfully' })
             }
@@ -86,6 +121,28 @@ class userControllers{
 
             const userPasswordUpdate = await userServices.createPassword(userId, hashPasword)
             res.status(200).json({ success: true, data: userPasswordUpdate, message: 'User password updated' })
+        } catch (err: any) {
+            res.status(500).json({ success: false, data: null, message: err?.message })
+        }
+    }
+
+    getUserConversationList = async (req: any, res: any) => {
+        try {
+            const getUser: any = await userServices.getConversationList(req.params.id)
+            res.status(200).json({ success: true, data: getUser, message: 'Users conversation found' })
+
+        } catch (err: any) {
+            res.status(500).json({ success: false, data: null, message: err?.message }) 
+        }
+    }
+
+    getUserList = async (req: any, res: any) => {
+        try {
+            const { qs } = req.query;
+           console.log(qs)
+            const getUserlistData: any = await userServices.getUserListRegex(qs)
+            res.status(200).json({ success: true, data: getUserlistData, message: 'Success' })
+
         } catch (err: any) {
             res.status(500).json({ success: false, data: null, message: err?.message })
         }

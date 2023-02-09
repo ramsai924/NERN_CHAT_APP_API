@@ -31,6 +31,7 @@ class conversataionServices {
                     },
                 ]
             })
+            console.log('checkAlreadyexitsConversation', checkAlreadyexitsConversation)
             return checkAlreadyexitsConversation
         } catch (err: any) {
             throw err;

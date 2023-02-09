@@ -10,6 +10,10 @@ class conversationController {
                 return res.status(200).json({ success: false, data: null, message: 'Group name should not be empty' })
             }
 
+            if(type === undefined){
+                return res.status(200).json({ success: false, data: null, message: 'Please provide type of conversation' })
+            }
+
             if (type === "PRIVATE" && users.length < 2){
                 return res.status(200).json({ success: false, data: null, message: 'Private chat users to have two users' })
             }
@@ -23,8 +27,9 @@ class conversationController {
 
             if(type === "PRIVATE"){
                 const checkAlreadyexitsConversation = await conversationervice.checkUsersConversationALreadyExits(req.body)
+
                 if (checkAlreadyexitsConversation.length > 0) {
-                    return res.status(200).json({ success: false, data: null, message: `Conversation already exits` })
+                    return res.status(200).json({ success: false, data: checkAlreadyexitsConversation[0], message: `Conversation already exits` })
                 }
             }
 
