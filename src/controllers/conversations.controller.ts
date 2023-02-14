@@ -26,8 +26,8 @@ class conversationController {
             }
 
             if(type === "PRIVATE"){
-                const checkAlreadyexitsConversation = await conversationervice.checkUsersConversationALreadyExits(req.body)
-
+                const checkAlreadyexitsConversation: any = await conversationervice.checkUsersConversationALreadyExits(req.body)
+                console.log('checkAlreadyexitsConversation________', checkAlreadyexitsConversation.length)
                 if (checkAlreadyexitsConversation.length > 0) {
                     return res.status(200).json({ success: false, data: checkAlreadyexitsConversation[0], message: `Conversation already exits` })
                 }

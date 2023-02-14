@@ -4,6 +4,21 @@ import jwt from 'jsonwebtoken'
 
 const userServices = new userService()
 
+const tokenFunction = async (userObj: any) => {
+    try {
+        const refreshToken: any = await jwt.sign(userObj, 'CHATAPP', { expiresIn: '30d' })
+        const AccessToken: any = await jwt.sign(userObj, 'CHATAPP', { expiresIn: '30d' })
+
+        let responseUserData = {
+            refreshToken: refreshToken,
+            accessToken: AccessToken
+        }
+
+        return responseUserData
+    } catch (error: any) {
+        throw new Error(error)
+    }
+}
 class userControllers{
     getUserData = async (req: any, res: any) => {
         try {
@@ -53,11 +68,15 @@ class userControllers{
                 return res.status(200).json({ success: false, data: null, message: 'User already exits with details provided' })
             }
 
-            const userData: any = await userServices.createUser(req.body);
-            userData.password = await bcrypt.hash(password, 10)
+            let userReq: any = req.body;
+            const haspass = await bcrypt.hash(password, 10)
+            userReq.password = haspass
+
+            const userData: any = await userServices.createUser(userReq);
 
             if (userData){
                 const userObj = {
+                    _id: userData._id,
                     firstName: userData.firstName,
                     lastName: userData.lastName,
                     email: userData.email,
@@ -66,14 +85,48 @@ class userControllers{
                 const refreshToken: any = await jwt.sign(userObj, 'CHATAPP', { expiresIn: '60d' })
                 const AccessToken: any = await jwt.sign(userObj, 'CHATAPP', { expiresIn: '30d' })
 
-                let responseUserData = {
-                    token : {
-                        refreshToken: refreshToken,
-                        accessToken: AccessToken
-                    },
-                    user: userObj
+                const responseData = await tokenFunction(userObj)
+                res.status(200).json({ success: true, data: responseData, message: 'User created successfully' })
+            }
+        } catch (err: any) {
+            res.status(500).json({ success: false, data: null, message: err?.message })
+        }
+    }
+
+    loginUser = async (req: any, res: any) => {
+        try {
+            const { email, password } = req.body;
+
+            if (email === '' || email === undefined) {
+                return res.status(200).json({ success: false, data: null, message: 'Email should not be empty' })
+            }
+            if (password === '' || password === undefined) {
+                return res.status(200).json({ success: false, data: null, message: 'Password should not be empty' })
+            }
+
+            const userData: any = await userServices.checkUserData({ email: email })
+           
+            if (userData) {
+
+                const checkpassword = await bcrypt.compare(password, userData.password)
+                if (checkpassword){
+                    const userObj = {
+                        _id: userData._id,
+                        firstName: userData.firstName,
+                        lastName: userData.lastName,
+                        email: userData.email,
+                        avatar: userData.avatar
+                    }
+
+                    const responseData = await tokenFunction(userObj)
+
+                    res.status(200).json({ success: true, data: responseData, message: 'User found' })
+                }else{
+                    res.status(200).json({ success: false, data: null, message: 'Please provide vaild password' })
                 }
-                res.status(200).json({ success: true, data: responseUserData, message: 'User created successfully' })
+                
+            }else{
+                res.status(200).json({ success: false, data: null, message: 'Please provide valid details' })
             }
         } catch (err: any) {
             res.status(500).json({ success: false, data: null, message: err?.message })

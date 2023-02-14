@@ -40,7 +40,7 @@ const io = new socket.Server(server, {
 })
 app.set("socketio", io)
 io.on("connection", (socket: any) => {
-    // console.log('socket connection accquired')
+    console.log('socket connection accquired')
     globalSocket(socket)
 })
 

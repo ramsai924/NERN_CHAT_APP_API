@@ -14,6 +14,12 @@ const messagesSchema = new mongoose.Schema(
             type: mongoose.Types.ObjectId,
             ref: 'conversation'
         },
+        seen: {
+            type: Boolean,
+        },
+        seenTime:{
+            type: String
+        },
         deleted: {
             type: Boolean,
             default: false

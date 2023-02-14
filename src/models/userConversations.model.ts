@@ -21,4 +21,4 @@ const userconversationSchema = new mongoose.Schema(
 )
 
 const userconversationModel = mongoose.model('userconversation', userconversationSchema)
-export default userconversationModel
+export default userconversationModel 

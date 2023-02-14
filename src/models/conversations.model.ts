@@ -18,7 +18,8 @@ const conversationSchema = new mongoose.Schema(
         },
         type: {
             type: String,
-            default: 'PRIVATE'
+            default: 'PRIVATE',
+            required: true
         },
         topChat: {
             type: mongoose.Types.ObjectId,
@@ -27,7 +28,8 @@ const conversationSchema = new mongoose.Schema(
         },
         createdBy:{
             type: mongoose.Types.ObjectId,
-            ref: 'user'
+            ref: 'user',
+            required: true
         },
         updatedBy: {
             type: mongoose.Types.ObjectId,
