@@ -194,16 +194,6 @@ class userControllers{
         }
     }
 
-    getUserConversationList = async (req: any, res: any) => {
-        try {
-            const getUser: any = await userServices.getConversationList(req.params.id)
-            res.status(200).json({ success: true, data: getUser, message: 'Users conversation found' })
-
-        } catch (err: any) {
-            res.status(500).json({ success: false, data: null, message: err?.message }) 
-        }
-    }
-
     getUserList = async (req: any, res: any) => {
         try {
             const { qs } = req.query;

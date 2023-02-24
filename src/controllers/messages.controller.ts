@@ -6,7 +6,7 @@ const conversationService = new conversataionServices()
 class messagesController{
     createMessage = async (req: any, res: any) => {
         try {
-            const { userId,conversationId, content } = req.body;
+            const { userId, conversationId, content, users } = req.body;
             if(userId === "" || userId === null){
                 return res.status(200).json({ success: false, data: null, message: 'User ID should not be empty'})
             }
@@ -18,11 +18,16 @@ class messagesController{
             if(content === ""){
                 return res.status(200).json({ success: false, data: null, message: 'Message content should not be empty' })
             }
+            let messagePayload: any = req.body;
+            delete messagePayload.users
 
-            const messageData: any = await messageService.createMessage(req.body);
+            const messageData: any = await messageService.createMessage(messagePayload);
             if (messageData){
                 const socket = req.app.get("socketio");
-                socket.emit("new_message", { data: messageData })
+                users.forEach((user: any) => {
+                    socket.emit(`new_conversation_update_${user}`)
+                })
+                socket.emit(`new_conversation_${conversationId}`, { data: messageData })
                 conversationService.updateTopMessageinConversation(messageData._id, conversationId).then((data: any) => {
                     console.log('conversation updated')
                 }).catch((err: any) => {

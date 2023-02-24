@@ -1,3 +1,5 @@
+import userModel from "../models/users.model";
+
 const globalSocket = function(socket: any){
     
     //socket emit for user-online
@@ -13,6 +15,12 @@ const globalSocket = function(socket: any){
         console.log('offline', data)
         const { userID, dateTime } = data;
         socket.broadcast.emit(`user_offline_${userID}`, { ...data, userStatus: false })
+
+        userModel.findByIdAndUpdate({ _id: userID }, { $set: { lastseen: dateTime  } }).then((res: any) => {
+
+        }).catch((err: any) => {
+            console.log(err)
+        })
     })
 }
 

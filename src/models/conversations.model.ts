@@ -27,8 +27,10 @@ const conversationSchema = new mongoose.Schema(
             default: null
         },
         createdBy:{
-            type: mongoose.Types.ObjectId,
-            ref: 'user',
+            type: [{
+                type: mongoose.Types.ObjectId,
+                ref: 'user'
+            }],
             required: true
         },
         updatedBy: {

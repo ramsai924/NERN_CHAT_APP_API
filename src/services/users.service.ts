@@ -59,16 +59,7 @@ class userServices {
         }
     }
 
-    getConversationList = async (id: any) => {
-        try {
-            const findUserConversation: any = await userconversationModel.findOne({ user: id })
-                .populate([{ path: 'conversations', model: 'conversation', options: { sort: { updatedAt: -1 } }, populate: [{ path: 'createdBy', model: 'user' },{ path: 'users', model: 'user' }] }]);
-
-            return findUserConversation;
-        } catch (err: any) {
-            throw err;
-        }
-    }
+    
 
     getUserListRegex = async (query: any) => {
         try {

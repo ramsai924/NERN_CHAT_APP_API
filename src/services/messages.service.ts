@@ -12,7 +12,7 @@ class messagesServices {
 
    getMessagesByConversation = async (conversationId: any) => {
     try {
-        const messages: any = await messagesModel.find({ conversationID: conversationId })
+        const messages: any = await messagesModel.find({ conversationId: conversationId })
         return messages;
     } catch (err: any) {
         throw err;

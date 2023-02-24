@@ -18,17 +18,18 @@ class conversationController {
                 return res.status(200).json({ success: false, data: null, message: 'Private chat users to have two users' })
             }
 
-            if(type === "GROUP"){
-                const findExistingName = await conversationervice.checkConversation({ name: name })
-                if (findExistingName){
-                    return res.status(200).json({ success: false, data: null, message: `Already group name exits with name : ${name}` })
-                }
-            }
+            // if(type === "GROUP"){
+            //     const findExistingName = await conversationervice.checkConversation({ name: name })
+            //     if (findExistingName){
+            //         return res.status(200).json({ success: false, data: null, message: `Already group name exits with name : ${name}` })
+            //     }
+            // }
 
             if(type === "PRIVATE"){
                 const checkAlreadyexitsConversation: any = await conversationervice.checkUsersConversationALreadyExits(req.body)
-                console.log('checkAlreadyexitsConversation________', checkAlreadyexitsConversation.length)
-                if (checkAlreadyexitsConversation.length > 0) {
+               
+                if (checkAlreadyexitsConversation.length > 0 && type === 'PRIVATE') {
+                    await conversationervice.updateConversationCreatedByUser(req.body.createdBy, checkAlreadyexitsConversation[0]._id, checkAlreadyexitsConversation[0].users )
                     return res.status(200).json({ success: false, data: checkAlreadyexitsConversation[0], message: `Conversation already exits` })
                 }
             }
@@ -39,7 +40,7 @@ class conversationController {
                 const users: any = conversationData?.users;
                 users.forEach((user: any) => {
                     const socket = req.app.get("socketio");
-                    socket.emit(`new_conversation_${user}`)
+                    socket.emit(`new_conversation_update_${user}`)
                 })
             }
 
@@ -47,6 +48,26 @@ class conversationController {
             
         } catch (err: any) {
             console.log(err)
+            res.status(500).json({ success: false, data: null, message: err?.message })
+        }
+    }
+
+    getUserConversationList = async (req: any, res: any) => {
+        try {
+            const getUser: any = await conversationervice.getConversationList(req.params.id)
+            res.status(200).json({ success: true, data: getUser, message: 'Users conversation found' })
+
+        } catch (err: any) {
+            res.status(500).json({ success: false, data: null, message: err?.message })
+        }
+    }
+
+    getConversationData = async (req: any, res: any) => {
+        try {
+            const getUserConversation: any = await conversationervice.getConversationData(req.params.conversationId)
+            res.status(200).json({ success: true, data: getUserConversation, message: 'User conversation data found' })
+
+        } catch (err: any) {
             res.status(500).json({ success: false, data: null, message: err?.message })
         }
     }

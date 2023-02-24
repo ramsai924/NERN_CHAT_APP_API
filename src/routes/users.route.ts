@@ -9,6 +9,6 @@ export default function userRoutes(app: any){
     app.route('/get-users').get(userControllers.getUsers)
     app.route('/delete-user/:id').get(userControllers.createUser)
     app.route('/create-password').post(userControllers.createPassword)
-    app.route('/get-user-conversations/:id').get(userControllers.getUserConversationList)
     app.route('/search-user-list').get(userControllers.getUserList)
+    
 }
