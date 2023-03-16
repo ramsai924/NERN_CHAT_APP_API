@@ -6,12 +6,12 @@ const conversationService = new conversataionServices()
 class messagesController{
     createMessage = async (req: any, res: any) => {
         try {
-            const { userId, conversationId, content, users } = req.body;
+            const { userId, conversationClientData, content, users, userData } = req.body;
             if(userId === "" || userId === null){
                 return res.status(200).json({ success: false, data: null, message: 'User ID should not be empty'})
             }
 
-            if (conversationId === "" || conversationId === null) {
+            if (conversationClientData === "" || conversationClientData === null) {
                 return res.status(200).json({ success: false, data: null, message: 'conversation ID should not be empty' })
             }
 
@@ -19,16 +19,25 @@ class messagesController{
                 return res.status(200).json({ success: false, data: null, message: 'Message content should not be empty' })
             }
             let messagePayload: any = req.body;
+            messagePayload.conversationId = conversationClientData._id
+            messagePayload.userId = userData._id
             delete messagePayload.users
+            delete messagePayload.conversationClientData
+            delete messagePayload.userData
 
             const messageData: any = await messageService.createMessage(messagePayload);
             if (messageData){
                 const socket = req.app.get("socketio");
                 users.forEach((user: any) => {
-                    socket.emit(`new_conversation_update_${user}`)
+                    socket.emit(`new_conversation_update_${user}`, { render: true })
                 })
-                socket.emit(`new_conversation_${conversationId}`, { data: messageData })
-                conversationService.updateTopMessageinConversation(messageData._id, conversationId).then((data: any) => {
+                let updatedMsgData: any = JSON.parse(JSON.stringify(messageData))
+                updatedMsgData.conversationId = conversationClientData
+                updatedMsgData.userId = userData
+             
+
+                socket.emit(`new_conversation_${conversationClientData._id}`, { data: updatedMsgData })
+                conversationService.updateTopMessageinConversation(messageData._id, conversationClientData._id).then((data: any) => {
                     console.log('conversation updated')
                 }).catch((err: any) => {
                     console.log('error updating conversation')

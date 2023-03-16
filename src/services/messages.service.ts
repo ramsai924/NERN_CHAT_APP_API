@@ -12,7 +12,10 @@ class messagesServices {
 
    getMessagesByConversation = async (conversationId: any) => {
     try {
-        const messages: any = await messagesModel.find({ conversationId: conversationId })
+        const messages: any = await messagesModel.find({ conversationId: conversationId }).populate([
+            { path: 'conversationId', model: 'conversation' },
+            { path: 'userId', model: 'user' }
+        ])
         return messages;
     } catch (err: any) {
         throw err;

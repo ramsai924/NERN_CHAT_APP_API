@@ -1,6 +1,7 @@
 import conversationervices from '../services/conversations.service'
 const conversationervice = new conversationervices()
 
+
 class conversationController {
     createConversation = async (req: any, res: any) => {
         try {
@@ -40,7 +41,7 @@ class conversationController {
                 const users: any = conversationData?.users;
                 users.forEach((user: any) => {
                     const socket = req.app.get("socketio");
-                    socket.emit(`new_conversation_update_${user}`)
+                    socket.emit(`new_conversation_update_${user}`, { render: (type === 'GROUP' || (type === 'PRIVATE' && conversationData?.topChat !== null) ? true : false)  })
                 })
             }
 
