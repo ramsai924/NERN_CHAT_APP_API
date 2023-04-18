@@ -10,7 +10,7 @@ import userRoutes from './routes/users.route';
 import messageRoutes from './routes/messages.route';
 import conversationRoutes from './routes/conversations.route';
 import globalSocket from './sockets/index';
-
+const origins = ["http://localhost:3000", "https://nern-chatapp-client-314y-6md3dav7n-ramsai924.vercel.app/", "https://nern-chatapp-client.vercel.app/", "*"]
 const app: any = express();
 
 //request body parser
@@ -18,7 +18,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({limit: '100mb',extended: true }))
 app.use(cors({
     credentials: true,
-    origin: ["http://localhost:3000", "https://nern-chatapp-client-314y-6md3dav7n-ramsai924.vercel.app/", "https://nern-chatapp-client.vercel.app/"],
+    origin: origins,
 }))
 //other configurations
 app.use(express.static(path.join(__dirname,'assets')))
@@ -39,7 +39,7 @@ const server = http.createServer(app)
 const io = new socket.Server(server, {
     cors: {
         credentials: true,
-        origin: ["http://localhost:3000", "https://nern-chatapp-client-314y-6md3dav7n-ramsai924.vercel.app/"],
+        origin: origins,
     }
 })
 app.set("socketio", io)
