@@ -18,7 +18,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({limit: '100mb',extended: true }))
 app.use(cors({
     credentials: true,
-    origin: ["http://localhost:3000", "https://nern-chatapp-client-314y-6md3dav7n-ramsai924.vercel.app/"],
+    origin: ["http://localhost:3000", "https://nern-chatapp-client-314y-6md3dav7n-ramsai924.vercel.app/", "https://nern-chatapp-client.vercel.app/"],
 }))
 //other configurations
 app.use(express.static(path.join(__dirname,'assets')))
