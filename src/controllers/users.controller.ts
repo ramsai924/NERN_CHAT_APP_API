@@ -205,6 +205,18 @@ class userControllers{
             res.status(500).json({ success: false, data: null, message: err?.message })
         }
     }
+
+    statusCode = async (req: any, res: any) => {
+        try {
+            // let res: any = {}
+            // res.name.dsa
+            // console.log('first')
+            res.status(301).json({ success: true, data: [], message: 'Successs' })
+            // throw new Error('Ayoooooooooooooooo')
+        } catch (err: any) {
+            res.status(500).json({ success: false, data: null, message: err?.message })
+        }
+    }
 }
 
 export default userControllers;

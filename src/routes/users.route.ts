@@ -10,5 +10,6 @@ export default function userRoutes(app: any){
     app.route('/delete-user/:id').get(userControllers.createUser)
     app.route('/create-password').post(userControllers.createPassword)
     app.route('/search-user-list').get(userControllers.getUserList)
+    app.route('/test-status').get(userControllers.statusCode)
     
 }

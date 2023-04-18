@@ -16,7 +16,10 @@ const app: any = express();
 //request body parser
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({limit: '100mb',extended: true }))
-app.use(cors())
+app.use(cors({
+    credentials: true,
+    origin: ["http://localhost:3000", "https://nern-chatapp-client-314y-6md3dav7n-ramsai924.vercel.app/"],
+}))
 //other configurations
 app.use(express.static(path.join(__dirname,'assets')))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
@@ -35,12 +38,13 @@ app.use(function(req: any, res: any, next: any){
 const server = http.createServer(app)
 const io = new socket.Server(server, {
     cors: {
-        origin: ["http://localhost:3000"],
+        credentials: true,
+        origin: ["http://localhost:3000", "https://nern-chatapp-client-314y-6md3dav7n-ramsai924.vercel.app/"],
     }
 })
 app.set("socketio", io)
 io.on("connection", (socket: any) => {
-    console.log('socket connection accquired')
+    // console.log('socket connection accquired')
     globalSocket(socket)
 })
 

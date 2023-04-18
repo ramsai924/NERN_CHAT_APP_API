@@ -55,8 +55,20 @@ class conversationController {
 
     getUserConversationList = async (req: any, res: any) => {
         try {
+            // console.log('cookies____', req.headers.cookie)
             const getUser: any = await conversationervice.getConversationList(req.params.id)
             res.status(200).json({ success: true, data: getUser, message: 'Users conversation found' })
+
+        } catch (err: any) {
+            res.status(500).json({ success: false, data: null, message: err?.message })
+        }
+    }
+
+    getUserConversations = async (req: any, res: any) => {
+        try {
+            console.log('cookies____', req.query)
+            // const getUser: any = await conversationervice.getConversationList(req.params.id)
+            res.status(200).json({ success: true, data: null, message: 'Users conversation found' })
 
         } catch (err: any) {
             res.status(500).json({ success: false, data: null, message: err?.message })
